@@ -11,7 +11,7 @@ from torch.profiler import ProfilerActivity, profiler, record_function
 from torch.utils import data
 from tqdm.auto import tqdm
 from torch.cuda.amp import autocast, GradScaler
-from logger import log_memory, log_profiler, setup_logger
+from logger import log_loss, log_memory, log_profiler, setup_logger
 from interrupt import InterruptHandler
 from modules.transformer import TransNovo
 from training import mean_batch_acc
@@ -71,6 +71,7 @@ def train_step(model: nn.Module,
         
         result_matrix[i, 1] = mean_batch_acc(logits_flat.permute(0,2,1).detach(), tgt_output.detach())
 
+        log_loss(loss.item())
         if interruptHandler.is_interrupted():
             break
 

@@ -20,6 +20,7 @@ def setup_logger(module_name: str) -> logging.Logger:
 
 logger = setup_logger(__name__)
 profiler_logger = None
+loss_logger = None
 
 def get_gpu_memory_info() -> Tuple[float, float, float]:
     """
@@ -53,6 +54,19 @@ def log_profiler(msg):
         profiler_logger = logger
 
     profiler_logger.info(msg)
+
+def log_loss(msg):
+    global loss_logger
+    if loss_logger is None:
+        logger = logging.getLogger('loss_logger')
+        logger.setLevel(logging.INFO)  # Set the logging level for logger1
+        file_handler = logging.FileHandler('loss.log')
+        file_handler.setLevel(logging.INFO)
+        formatter = logging.Formatter('%(message)s')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+        loss_logger = logger
+    loss_logger.info(msg)
 
 def set_all_loggers_level_to_error():
     root_logger = logging.getLogger()
