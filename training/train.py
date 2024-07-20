@@ -15,7 +15,7 @@ from logger import log_memory, log_profiler, setup_logger
 from interrupt import InterruptHandler
 from modules.transformer import TransNovo
 from training import mean_batch_acc
-from models import beam_search_decode, greedy_decode
+from models import Model, beam_search_decode, greedy_decode
 logger = setup_logger(__name__)
 
 def train_step(model: nn.Module,
@@ -132,7 +132,7 @@ def init_adam(model: nn.Module, p: Parameters):
     return a, scheduler
 
 
-def train_loop(model: nn.Module, p: Parameters ,optimizer: torch.optim.Optimizer,
+def train_loop(model: Model, p: Parameters ,optimizer: torch.optim.Optimizer,
                 loss_fn, train_dl, test_dl, interruptHandler: InterruptHandler, scheduler: Optional[LambdaLR] = None):
     model.train( True )
     rm_idx = 0
@@ -184,6 +184,7 @@ def train_loop(model: nn.Module, p: Parameters ,optimizer: torch.optim.Optimizer
             t += f"\n\t{epoch:>6}|{lr:>8.8f}|{tr_l:>12.6f}|{tr_a:>11.6f}|{tr_epoch_grads:>18.6f}|{te_l:>11.6f}|{te_a:>10.6f}\n"
             print(t)
 
+        model.save_model()
         # TODO: Save after evey N iterations
         if interruptHandler.is_interrupted():
             break
