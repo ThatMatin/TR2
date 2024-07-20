@@ -1,3 +1,4 @@
+import os
 from torch import nn
 from config import get
 from tokenizer import get_vocab_size
@@ -69,6 +70,10 @@ class Model( nn.Module ):
     
     def load_model(self):
         self.load_state_dict(torch.load("model.pt"))
+
+    def load_if_file_exists(self):
+        if os.path.exists("model.pt"):
+            self.load_model()
 
 def greedy_decode( model:Model, x, ch, mz, max_len = 256):
     encoded_x = model.encoder( x )

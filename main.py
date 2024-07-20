@@ -44,6 +44,7 @@ def main():
 
     # Create model
     model = Model()
+    model.load_if_file_exists()
     model.to(p.device)
     if bool(get("train.compile")):
         model = compile(model, mode="max-autotune")

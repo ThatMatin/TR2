@@ -28,7 +28,6 @@ def train_step(model: nn.Module,
 
     result_matrix = torch.zeros((len(train_dl), 3))
     is_profiling_on = bool(get("profile.is_active"))
-    clip_value = float(get("train.clip_value"))
     accumulation_steps = int(get("train.accumulation_steps"))
 
     # target_mask = generate_causal_target_mask(2048)
@@ -218,7 +217,8 @@ def eval(model: nn.Module,
                 break
             acc = (pred == Y).to(int)
             acc = (acc.sum(dim=1) / Y.shape[1]).mean()
-        print( f'accuracy ------- > {acc}' )
-
+            print( f'accuracy ------- > {acc}' )
+            if i % 20 == 0:
+                break
 
     return 
