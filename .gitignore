@@ -6,7 +6,7 @@ snippets.py
 *jukit*
 
 trace.json
-profile.log
+*.log
 
 *.pth
 *.pt

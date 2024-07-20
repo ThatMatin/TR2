@@ -121,9 +121,10 @@ def init_adam(model: nn.Module, p: Parameters):
     print(f"Optimizer init:\n\ttotal steps: {total_steps}\n\twarmup steps: {warmup_steps}")
     def polynomial_decay(current_step: int):
         return (1 - current_step / float(total_steps)) ** 3
-
+    def exponential_decay(current_step: int, decay_rate: float = .95):
+        return decay_rate ** current_step
     a = Adam(model.parameters(), lr, betas, eps, 1e-5)
-    scheduler = LambdaLR(a, polynomial_decay)
+    scheduler = LambdaLR(a, exponential_decay)
 
     if len(p.optimizer_state_dict) != 0:
         a.load_state_dict(model.hyper_params.optimizer_state_dict)

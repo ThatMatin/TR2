@@ -10,7 +10,7 @@ class Encoder( nn.Module ):
     def __init__(self, d_model, nhead, d_ff, dropout, num_layers, activation='relu', spectrom_len=2048 ):
         super().__init__()
         self.spectrum_emb = E.SpectrumEmbedding( d_model )
-        encoder_layer = nn.TransformerEncoderLayer( d_model, nhead, d_ff, dropout, activation=activation )
+        encoder_layer = nn.TransformerEncoderLayer( d_model, nhead, d_ff, dropout, activation=activation, norm_first= True )
         self.transformer_encoder = nn.TransformerEncoder( encoder_layer, num_layers= num_layers )
 
     def forward(self, spectrum):
@@ -29,7 +29,7 @@ class Decoder(nn.Module):
         self.num_layers = num_layers
 
         self.precursor_emb = E.PeptidePrecursorEmbedding(d_model, mz_positional_emb)
-        decoder_layer = nn.TransformerDecoderLayer( d_model, nhead, d_ff, dropout, activation=activation )
+        decoder_layer = nn.TransformerDecoderLayer( d_model, nhead, d_ff, dropout, activation=activation, norm_first= True )
         self.decoder = nn.TransformerDecoder( decoder_layer, num_layers )
 
     def forward(self, ch, mz, seq, encoded_x):
