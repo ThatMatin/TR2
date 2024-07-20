@@ -158,7 +158,7 @@ def train_loop(model: Model, p: Parameters ,optimizer: torch.optim.Optimizer,
 
         train_result_matrix[rm_idx] = training.train_step(model, optimizer, loss_fn, train_dl, scheduler, scaler, interruptHandler)
         test_result_matrix[rm_idx] = training.test_step(model, loss_fn, test_dl, interruptHandler)
-        if epoch % 5 == 0:
+        if epoch % 5 == 4:
             eval(model, loss_fn, test_dl, interruptHandler)
         # Update learning rate
         lr = optimizer.param_groups[0]['lr']
