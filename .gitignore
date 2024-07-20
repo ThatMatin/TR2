@@ -1,0 +1,16 @@
+.jukit/
+datafiles/
+
+__pycache__
+snippets.py
+*jukit*
+
+trace.json
+profile.log
+
+*.pth
+*.pt
+*.tensor
+
+*.png
+*.jpg

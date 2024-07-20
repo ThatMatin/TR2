@@ -1,0 +1,28 @@
+data:
+  test-path: datafiles/test2
+  train-path: datafiles/train2
+  manifest-path: datafiles
+  size: 50
+  round-power-two: true
+
+dataloader:
+  queue_size: 128
+
+model:
+  d_model: 256
+  n_head: 8
+  n_layers: 7
+  d_ff: 1024
+  dropout: 0.1
+  batch_size: 4
+  lr: 0
+  n_epochs: 50
+
+train:
+  compile: false
+  clip_value: 50.0
+  accumulation_steps: 8
+
+profile:
+  is_active: false
+  profile_log_file: profile.log
