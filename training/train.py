@@ -60,7 +60,6 @@ def train_step(model: nn.Module,
             scaler.scale(loss).backward()
 
         if (i + 1) % accumulation_steps == 0:
-            nn.utils.clip_grad_value_(model.parameters(), clip_value=clip_value)
             scaler.step(optimizer)
             scaler.update()
             optimizer.zero_grad(set_to_none=True)
@@ -213,7 +212,7 @@ def eval(model: nn.Module,
                 # logits_flat = logits.transpose(-2, -1)
                 # loss = loss_fn(logits_flat, tgt_output)
                 for i in range( Y.shape[0] ):
-                    pred_seq = beam_search_decode( model, X[i].unsqueeze(0), Ch[i].reshape((1,1)), P[i].reshape((1,1)) )
+                    pred_seq = greedy_decode( model, X[i].unsqueeze(0), Ch[i].reshape((1,1)), P[i].reshape((1,1)) )
                     pred[i,:pred_seq.shape[1]] = pred_seq
             if interruptHandler.is_interrupted():
                 break
