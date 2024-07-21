@@ -1,3 +1,4 @@
+import traceback
 import torch
 import torch.nn as nn
 import time
@@ -87,22 +88,24 @@ def test_step(model: nn.Module,
     with torch.inference_mode():
         result_matrix = torch.zeros((len(test_dl), 2))
         model.eval()
+        try:
+            for i, (X,Y, Ch, P) in tqdm(enumerate(test_dl),
+                                total=len(test_dl),
+                                desc="over test set"):
+                with autocast():
+                    logits = model(X, Y[..., 1:], Ch, P )
 
-        for i, (X,Y, Ch, P) in tqdm(enumerate(test_dl),
-                             total=len(test_dl),
-                             desc="over test set"):
-            with autocast():
-                logits = model(X, Y[..., 1:], Ch, P )
+                    tgt_output = Y
+                    logits_flat = logits.transpose(-2, -1)
+                    loss = loss_fn(logits_flat, tgt_output)
 
-                tgt_output = Y
-                logits_flat = logits.transpose(-2, -1)
-                loss = loss_fn(logits_flat, tgt_output)
+                result_matrix[i, 0] = loss
+                result_matrix[i, 1] = mean_batch_acc(logits, tgt_output)
 
-            result_matrix[i, 0] = loss
-            result_matrix[i, 1] = mean_batch_acc(logits, tgt_output)
-
-            if interruptHandler.is_interrupted():
-                break
+                if interruptHandler.is_interrupted():
+                    break
+        except Exception as e:
+            logger.error(f"{traceback.format_exc()}\n{e}")
 
     return result_matrix
 
